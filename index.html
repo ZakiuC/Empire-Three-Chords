@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empire の Three Chords | 帝国の三和弦</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        :root {
+            --bg: #14202d;
+            --bg-alt: #1f3144;
+            --panel: rgba(26, 35, 50, 0.78);
+            --surface: rgba(33, 47, 66, 0.74);
+            --surface-strong: rgba(39, 56, 78, 0.9);
+            --elevated: rgba(36, 51, 71, 0.96);
+            --border: rgba(241, 250, 238, 0.1);
+            --text: #f1faee;
+            --text-soft: rgba(241, 250, 238, 0.7);
+            --text-faint: rgba(241, 250, 238, 0.44);
+            --accent: #2d8b8b;
+            --accent-2: #1a2332;
+            --accent-soft: rgba(45, 139, 139, 0.16);
+            --accent-outline: rgba(45, 139, 139, 0.3);
+            --glow-a: rgba(45, 139, 139, 0.22);
+            --glow-b: rgba(168, 218, 220, 0.26);
+            --button-text: #f1faee;
+            --shadow-color: rgba(3, 9, 16, 0.34);
+            --card-shadow: 0 24px 80px rgba(3, 9, 16, 0.28);
+            --drawer-shadow: -20px 0 80px rgba(3, 9, 16, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            min-height: 100%;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Noto Sans SC", "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 12% 18%, var(--glow-a), transparent 28%),
+                radial-gradient(circle at 88% 12%, var(--glow-b), transparent 30%),
+                linear-gradient(135deg, var(--bg) 0%, var(--bg-alt) 50%, var(--bg) 100%);
+            background-attachment: fixed;
+            transition: background 460ms ease, color 260ms ease;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            inset: 0;
+            background:
+                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+            background-size: 110px 110px;
+            mix-blend-mode: soft-light;
+            opacity: 0.46;
+        }
+
+        body::after {
+            right: -16vw;
+            bottom: -24vh;
+            width: 52vw;
+            height: 52vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--glow-a), transparent 68%);
+            filter: blur(24px);
+            animation: drift 18s ease-in-out infinite alternate;
+        }
+
+        body[data-theme="ocean"] {
+            --bg: #14202d;
+            --bg-alt: #1f3144;
+            --panel: rgba(26, 35, 50, 0.78);
+            --surface: rgba(33, 47, 66, 0.74);
+            --surface-strong: rgba(39, 56, 78, 0.9);
+            --elevated: rgba(36, 51, 71, 0.96);
+            --border: rgba(241, 250, 238, 0.1);
+            --text: #f1faee;
+            --text-soft: rgba(241, 250, 238, 0.7);
+            --text-faint: rgba(241, 250, 238, 0.44);
+            --accent: #2d8b8b;
+            --accent-2: #1a2332;
+            --accent-soft: rgba(45, 139, 139, 0.16);
+            --accent-outline: rgba(45, 139, 139, 0.3);
+            --glow-a: rgba(45, 139, 139, 0.22);
+            --glow-b: rgba(168, 218, 220, 0.26);
+            --button-text: #f1faee;
+            --shadow-color: rgba(3, 9, 16, 0.34);
+            --card-shadow: 0 24px 80px rgba(3, 9, 16, 0.28);
+            --drawer-shadow: -20px 0 80px rgba(3, 9, 16, 0.4);
+        }
+
+        body[data-theme="golden"] {
+            --bg: #f6efe4;
+            --bg-alt: #fcf8f1;
+            --panel: rgba(244, 236, 223, 0.78);
+            --surface: rgba(255, 250, 244, 0.64);
+            --surface-strong: rgba(255, 252, 248, 0.88);
+            --elevated: rgba(255, 252, 248, 0.95);
+            --border: rgba(74, 64, 58, 0.1);
+            --text: #4a403a;
+            --text-soft: rgba(74, 64, 58, 0.68);
+            --text-faint: rgba(74, 64, 58, 0.42);
+            --accent: #f4a900;
+            --accent-2: #c1666b;
+            --accent-soft: rgba(244, 169, 0, 0.16);
+            --accent-outline: rgba(193, 102, 107, 0.24);
+            --glow-a: rgba(244, 169, 0, 0.2);
+            --glow-b: rgba(193, 102, 107, 0.18);
+            --button-text: #4a403a;
+            --shadow-color: rgba(122, 91, 48, 0.15);
+            --card-shadow: 0 24px 80px rgba(122, 91, 48, 0.11);
+            --drawer-shadow: -20px 0 80px rgba(122, 91, 48, 0.16);
+        }
+
+        body[data-theme="forest"] {
+            --bg: #1f2b20;
+            --bg-alt: #2d4a2b;
+            --panel: rgba(31, 43, 32, 0.8);
+            --surface: rgba(45, 60, 42, 0.74);
+            --surface-strong: rgba(55, 72, 50, 0.9);
+            --elevated: rgba(52, 68, 48, 0.96);
+            --border: rgba(250, 249, 246, 0.1);
+            --text: #faf9f6;
+            --text-soft: rgba(250, 249, 246, 0.7);
+            --text-faint: rgba(250, 249, 246, 0.44);
+            --accent: #2d4a2b;
+            --accent-2: #7d8471;
+            --accent-soft: rgba(125, 132, 113, 0.16);
+            --accent-outline: rgba(45, 74, 43, 0.22);
+            --glow-a: rgba(125, 132, 113, 0.18);
+            --glow-b: rgba(164, 172, 134, 0.18);
+            --button-text: #faf9f6;
+            --shadow-color: rgba(9, 14, 8, 0.34);
+            --card-shadow: 0 24px 80px rgba(9, 14, 8, 0.26);
+            --drawer-shadow: -20px 0 80px rgba(9, 14, 8, 0.38);
+        }
+
+        body[data-theme="frost"] {
+            --bg: #edf4fb;
+            --bg-alt: #fafafa;
+            --panel: rgba(250, 250, 250, 0.8);
+            --surface: rgba(255, 255, 255, 0.7);
+            --surface-strong: rgba(255, 255, 255, 0.9);
+            --elevated: rgba(255, 255, 255, 0.96);
+            --border: rgba(74, 111, 165, 0.12);
+            --text: #29405f;
+            --text-soft: rgba(41, 64, 95, 0.66);
+            --text-faint: rgba(41, 64, 95, 0.42);
+            --accent: #4a6fa5;
+            --accent-2: #c0c0c0;
+            --accent-soft: rgba(74, 111, 165, 0.16);
+            --accent-outline: rgba(74, 111, 165, 0.24);
+            --glow-a: rgba(74, 111, 165, 0.18);
+            --glow-b: rgba(212, 228, 247, 0.3);
+            --button-text: #fafafa;
+            --shadow-color: rgba(74, 111, 165, 0.12);
+            --card-shadow: 0 24px 80px rgba(74, 111, 165, 0.1);
+            --drawer-shadow: -20px 0 80px rgba(74, 111, 165, 0.14);
+        }
+
+        body,
+        button,
+        input {
+            font: inherit;
+        }
+
+        button,
+        input {
+            border: none;
+            outline: none;
+        }
+
+        .stage,
+        .stage *:not(input),
+        .settings-drawer,
+        .settings-drawer *:not(input) {
+            -webkit-user-select: none;
+            user-select: none;
+            caret-color: transparent;
+        }
+
+        input {
+            -webkit-user-select: text;
+            user-select: text;
+            caret-color: auto;
+        }
+
+        button {
+            cursor: pointer;
+            background: none;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        ::selection {
+            background: var(--accent-soft);
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(120, 120, 120, 0.18);
+            border-radius: 999px;
+        }
+
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            width: min(1240px, calc(100% - 40px));
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: 44px 0 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stage {
+            position: relative;
+            width: 100%;
+            padding: 42px;
+            border-radius: 34px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(24px);
+        }
+
+        .stage::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.18), transparent 44%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .brand {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .brand-en {
+            margin: 0;
+            color: var(--text-soft);
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: 0.32em;
+            text-transform: uppercase;
+        }
+
+        .brand-cn {
+            margin: 16px 0 0;
+            font-family: "Noto Serif SC", serif;
+            font-size: clamp(2.5rem, 5vw, 4.8rem);
+            line-height: 1.04;
+            letter-spacing: -0.08em;
+        }
+
+        .results-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 18px;
+            margin-top: 34px;
+        }
+
+        .result-card {
+            position: relative;
+            overflow: hidden;
+            min-height: 238px;
+            height: 238px;
+            padding: 22px;
+            border-radius: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            display: grid;
+            grid-template-rows: auto 1fr;
+            align-items: stretch;
+            gap: 18px;
+            transition: transform 260ms ease, background 260ms ease, border-color 260ms ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            background: var(--surface-strong);
+            border-color: var(--accent-outline);
+        }
+
+        .result-card::after {
+            content: "";
+            position: absolute;
+            right: -28px;
+            bottom: -28px;
+            width: 164px;
+            height: 164px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--accent-soft), transparent 68%);
+            pointer-events: none;
+        }
+
+        .result-label {
+            position: relative;
+            z-index: 1;
+            color: var(--text-faint);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            width: 100%;
+            text-align: center;
+        }
+
+        .result-value-slot {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .result-value {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            font-family: "Noto Serif SC", serif;
+            font-size: clamp(3rem, 6vw, 4.4rem);
+            line-height: 1.08;
+            letter-spacing: -0.08em;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .controls {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .manual-button,
+        .cruise-button {
+            min-height: 72px;
+            padding: 0 26px;
+            border-radius: 24px;
+            font-size: 0.98rem;
+            font-weight: 800;
+            transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease, border-color 220ms ease;
+        }
+
+        .manual-button {
+            min-width: 220px;
+            color: var(--text);
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+        }
+
+        .manual-button:hover {
+            transform: translateY(-2px);
+            background: var(--elevated);
+            border-color: var(--accent-outline);
+        }
+
+        .cruise-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            width: 360px;
+            flex: 0 0 360px;
+            color: var(--text);
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .cruise-button:hover {
+            transform: translateY(-2px);
+            background: var(--surface-strong);
+        }
+
+        .cruise-button.is-active {
+            background: var(--accent-soft);
+            border-color: var(--accent-outline);
+            box-shadow: 0 14px 28px var(--shadow-color);
+        }
+
+        .toggle-track {
+            position: relative;
+            flex: 0 0 58px;
+            width: 58px;
+            height: 34px;
+            padding: 4px;
+            border-radius: 999px;
+            background: rgba(127, 127, 127, 0.24);
+            transition: background 220ms ease;
+        }
+
+        .cruise-button.is-active .toggle-track {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        }
+
+        .toggle-thumb {
+            display: block;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+            transform: translateX(0);
+            transition: transform 220ms ease;
+        }
+
+        .cruise-button.is-active .toggle-thumb {
+            transform: translateX(24px);
+        }
+
+        .cruise-text {
+            flex: 1;
+            min-width: 0;
+            text-align: left;
+        }
+
+        .cruise-text strong,
+        .cruise-text span {
+            display: block;
+        }
+
+        .cruise-text strong {
+            font-size: 0.98rem;
+            font-weight: 800;
+        }
+
+        .cruise-text span {
+            margin-top: 6px;
+            color: var(--text-soft);
+            font-size: 0.88rem;
+            line-height: 1.5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .settings-entry {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 30;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            min-height: 56px;
+            padding: 0;
+            border-radius: 50%;
+            background: var(--elevated);
+            border: 1px solid var(--border);
+            color: var(--text);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(14px);
+            transition: transform 220ms ease, opacity 220ms ease, border-color 220ms ease, background 220ms ease;
+        }
+
+        .settings-entry:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-outline);
+            background: var(--surface-strong);
+        }
+
+        .settings-entry.is-hidden {
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+        }
+
+        .settings-entry-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            color: var(--text);
+        }
+
+        .settings-entry-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .drawer-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 38;
+            background: rgba(7, 10, 14, 0.28);
+            backdrop-filter: blur(6px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 240ms ease;
+        }
+
+        .drawer-backdrop.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .settings-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            z-index: 40;
+            width: min(460px, 100vw);
+            height: 100vh;
+            background: var(--panel);
+            border-left: 1px solid var(--border);
+            box-shadow: var(--drawer-shadow);
+            backdrop-filter: blur(28px);
+            transform: translateX(100%);
+            transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-drawer.is-open {
+            transform: translateX(0);
+        }
+
+        .drawer-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 26px 22px 32px;
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .drawer-eyebrow {
+            margin: 0;
+            color: var(--text-faint);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .drawer-title {
+            margin: 10px 0 0;
+            font-family: "Noto Serif SC", serif;
+            font-size: clamp(1.8rem, 3vw, 2.6rem);
+            line-height: 1.08;
+            letter-spacing: -0.05em;
+        }
+
+        .drawer-close {
+            flex: 0 0 auto;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 1.2rem;
+        }
+
+        .setting-section {
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .setting-title {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 800;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .theme-button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 20px;
+            background: var(--surface);
+            border: 1px solid transparent;
+            color: var(--text);
+            text-align: left;
+            transition: transform 220ms ease, background 220ms ease, border-color 220ms ease;
+        }
+
+        .theme-button:hover {
+            transform: translateY(-2px);
+            background: var(--surface-strong);
+            border-color: var(--accent-outline);
+        }
+
+        .theme-button.is-active {
+            background: var(--accent-soft);
+            border-color: var(--accent-outline);
+        }
+
+        .theme-swatch {
+            flex: 0 0 38px;
+            width: 38px;
+            height: 38px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--swatch-start), var(--swatch-end));
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
+        }
+
+        .theme-name {
+            display: block;
+            font-size: 0.94rem;
+            font-weight: 800;
+        }
+
+        .theme-copy {
+            display: block;
+            margin-top: 4px;
+            color: var(--text-soft);
+            font-size: 0.82rem;
+            line-height: 1.5;
+        }
+
+        .timing-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .timing-chip {
+            min-height: 44px;
+            padding: 0 16px;
+            border-radius: 999px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-soft);
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: transform 220ms ease, background 220ms ease, border-color 220ms ease, color 220ms ease;
+        }
+
+        .timing-chip:hover {
+            transform: translateY(-1px);
+            background: var(--surface-strong);
+        }
+
+        .timing-chip.is-active {
+            background: var(--accent-soft);
+            border-color: var(--accent-outline);
+            color: var(--text);
+        }
+
+        .custom-input-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 14px;
+            min-height: 48px;
+            padding: 0 14px;
+            border-radius: 16px;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+        }
+
+        .custom-input-wrap input {
+            width: 92px;
+            background: transparent;
+            color: var(--text);
+        }
+
+        .current-interval {
+            margin-top: 12px;
+            color: var(--text-faint);
+            font-size: 0.86rem;
+            line-height: 1.6;
+        }
+
+        .pool-grid {
+            display: grid;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .pool-card {
+            padding: 18px;
+            border-radius: 22px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .pool-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .pool-head h3 {
+            margin: 0;
+            font-size: 0.96rem;
+            font-weight: 800;
+        }
+
+        .pool-count {
+            display: inline-flex;
+            align-items: center;
+            min-height: 30px;
+            padding: 0 10px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--text);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            min-height: 48px;
+        }
+
+        .pool-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 36px;
+            padding: 0 12px;
+            border-radius: 999px;
+            background: var(--elevated);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .chip-remove {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            color: var(--text-faint);
+            font-size: 0.9rem;
+            line-height: 1;
+            padding: 0;
+        }
+
+        .chip-remove:hover {
+            color: #d34c4c;
+            background: rgba(211, 76, 76, 0.1);
+        }
+
+        .empty-hint {
+            color: var(--text-faint);
+            font-size: 0.88rem;
+            line-height: 1.65;
+        }
+
+        .editor-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .editor-row input {
+            flex: 1;
+            min-width: 0;
+            height: 46px;
+            padding: 0 14px;
+            border-radius: 14px;
+            background: var(--elevated);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .editor-row input::placeholder {
+            color: var(--text-faint);
+        }
+
+        .editor-row input:focus {
+            border-color: var(--accent-outline);
+            box-shadow: 0 0 0 6px var(--accent-soft);
+        }
+
+        .editor-row button {
+            min-width: 72px;
+            height: 46px;
+            border-radius: 14px;
+            background: var(--surface-strong);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-weight: 800;
+        }
+
+        .editor-row button:hover {
+            background: var(--elevated);
+            border-color: var(--accent-outline);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+            animation: riseIn 540ms ease forwards;
+        }
+
+        .animate-swap {
+            animation: swapIn 520ms cubic-bezier(0.18, 1, 0.32, 1) forwards;
+        }
+
+        @keyframes riseIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes swapIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.97);
+                filter: blur(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes drift {
+            from {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+
+            to {
+                transform: translate3d(-30px, -26px, 0) scale(1.08);
+            }
+        }
+
+        @media (max-width: 980px) {
+            .results-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 720px) {
+            .app-shell {
+                width: min(100% - 24px, 1240px);
+                padding: 20px 0 28px;
+            }
+
+            .stage {
+                padding: 24px;
+                border-radius: 28px;
+            }
+
+            .brand-en {
+                font-size: 0.8rem;
+                letter-spacing: 0.22em;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+                margin-top: 26px;
+            }
+
+            .controls {
+                margin-top: 24px;
+            }
+
+            .manual-button,
+            .cruise-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .settings-entry {
+                right: 16px;
+                bottom: 16px;
+                min-height: 52px;
+            }
+
+            .theme-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-drawer {
+                width: 100vw;
+            }
+        }
+    </style>
+</head>
+<body data-theme="golden">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useLayoutEffect, useRef, useCallback } = React;
+
+        const initialCategories = [
+            { id: 'key', name: '调性', items: ['G大调', 'D大调', 'A大调', 'E大调', 'B大调', '#F大调', 'F大调', 'bB大调', 'bE大调', 'bA大调', 'bD大调'] },
+            { id: 'degree', name: '级数', items: ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ', 'Ⅵ', 'Ⅶ'] },
+            { id: 'inversion', name: '转位', items: ['1', '1/3', '1/5'] },
+            { id: 'shape', name: '指型', items: ['C', 'A', 'G', 'E', 'D'] }
+        ];
+
+        const timeOptions = [
+            { label: '5 秒', value: 5000 },
+            { label: '3 秒', value: 3000 },
+            { label: '1 秒', value: 1000 },
+            { label: '0.6 秒', value: 600 },
+            { label: '自定义', value: 'custom' }
+        ];
+
+        const themePresets = [
+            {
+                id: 'golden',
+                name: 'Golden Hour',
+                copy: '暖金高光与陶土余温',
+                swatchStart: '#f4a900',
+                swatchEnd: '#c1666b',
+                scheme: 'light'
+            },
+            {
+                id: 'ocean',
+                name: 'Ocean Depths',
+                copy: '深海夜底与海沫蓝绿高光',
+                swatchStart: '#2d8b8b',
+                swatchEnd: '#1a2332',
+                scheme: 'dark'
+            },
+            {
+                id: 'forest',
+                name: 'Forest Canopy',
+                copy: '林夜暗底与鼠尾草雾感层次',
+                swatchStart: '#2d4a2b',
+                swatchEnd: '#7d8471',
+                scheme: 'dark'
+            },
+            {
+                id: 'frost',
+                name: 'Arctic Frost',
+                copy: '冰蓝底面与钢蓝银色细节',
+                swatchStart: '#4a6fa5',
+                swatchEnd: '#c0c0c0',
+                scheme: 'light'
+            }
+        ];
+
+        const themeStorageKey = 'empire-three-chords-theme';
+        const poolStorageKey = 'empire-three-chords-pools';
+        const timingStorageKey = 'empire-three-chords-timing';
+
+        const createMap = (list, fallbackValue) => {
+            return Object.fromEntries(list.map((category) => [category.id, fallbackValue]));
+        };
+
+        const loadCategories = () => {
+            try {
+                const raw = JSON.parse(localStorage.getItem(poolStorageKey));
+
+                if (!Array.isArray(raw)) {
+                    return initialCategories;
+                }
+
+                return initialCategories.map((initialCategory) => {
+                    const matched = raw.find((entry) => entry && entry.id === initialCategory.id);
+
+                    if (!matched || !Array.isArray(matched.items)) {
+                        return initialCategory;
+                    }
+
+                    return {
+                        ...initialCategory,
+                        items: matched.items
+                            .filter((item) => typeof item === 'string')
+                            .map((item) => item.trim())
+                            .filter(Boolean)
+                    };
+                });
+            } catch (error) {
+                return initialCategories;
+            }
+        };
+
+        const loadTiming = () => {
+            try {
+                const raw = JSON.parse(localStorage.getItem(timingStorageKey));
+
+                if (!raw || (typeof raw.intervalVal !== 'number' && raw.intervalVal !== 'custom')) {
+                    return { intervalVal: 3000, customMs: 1800 };
+                }
+
+                return {
+                    intervalVal: raw.intervalVal,
+                    customMs: typeof raw.customMs === 'number' ? raw.customMs : 1800
+                };
+            } catch (error) {
+                return { intervalVal: 3000, customMs: 1800 };
+            }
+        };
+
+        const formatDuration = (durationMs) => {
+            if (durationMs < 1000) {
+                return `${durationMs} ms`;
+            }
+
+            if (durationMs % 1000 === 0) {
+                return `${durationMs / 1000} 秒`;
+            }
+
+            return `${(durationMs / 1000).toFixed(1)} 秒`;
+        };
+
+        function ResultValue({ value, renderKey }) {
+            const valueRef = useRef(null);
+
+            useLayoutEffect(() => {
+                const element = valueRef.current;
+
+                if (!element) {
+                    return undefined;
+                }
+
+                const fitText = () => {
+                    const maxSize = 70;
+                    const minSize = 24;
+                    let nextSize = maxSize;
+
+                    element.style.fontSize = `${maxSize}px`;
+
+                    while (element.scrollWidth > element.clientWidth && nextSize > minSize) {
+                        nextSize -= 2;
+                        element.style.fontSize = `${nextSize}px`;
+                    }
+                };
+
+                const frame = window.requestAnimationFrame(fitText);
+                window.addEventListener('resize', fitText);
+
+                return () => {
+                    window.cancelAnimationFrame(frame);
+                    window.removeEventListener('resize', fitText);
+                };
+            }, [renderKey, value]);
+
+            return (
+                <div className="result-value-slot">
+                    <div key={renderKey} ref={valueRef} className="result-value animate-swap" title={value}>
+                        {value}
+                    </div>
+                </div>
+            );
+        }
+
+        function App() {
+            const [categories, setCategories] = useState(() => loadCategories());
+            const [results, setResults] = useState(() => createMap(loadCategories(), '-'));
+            const [renderKeys, setRenderKeys] = useState(() => createMap(loadCategories(), 0));
+            const [isAuto, setIsAuto] = useState(false);
+            const [showSettings, setShowSettings] = useState(false);
+            const [newItems, setNewItems] = useState(() => createMap(initialCategories, ''));
+            const [activeTheme, setActiveTheme] = useState(() => {
+                try {
+                    const storedTheme = localStorage.getItem(themeStorageKey);
+                    return themePresets.some((theme) => theme.id === storedTheme) ? storedTheme : 'golden';
+                } catch (error) {
+                    return 'golden';
+                }
+            });
+            const [intervalVal, setIntervalVal] = useState(() => loadTiming().intervalVal);
+            const [customMs, setCustomMs] = useState(() => loadTiming().customMs);
+
+            const activeThemePreset = themePresets.find((theme) => theme.id === activeTheme) || themePresets[0];
+            const currentMs = intervalVal === 'custom' ? Math.max(300, customMs || 0) : intervalVal;
+
+            const generateRandom = useCallback(() => {
+                const nextResults = {};
+                const nextRenderKeys = {};
+
+                categories.forEach((category) => {
+                    if (category.items.length === 0) {
+                        nextResults[category.id] = '-';
+                    } else {
+                        const randomIndex = Math.floor(Math.random() * category.items.length);
+                        nextResults[category.id] = category.items[randomIndex];
+                    }
+
+                    nextRenderKeys[category.id] = Math.random();
+                });
+
+                setResults(nextResults);
+                setRenderKeys(nextRenderKeys);
+            }, [categories]);
+
+            useEffect(() => {
+                generateRandom();
+            }, [generateRandom]);
+
+            useEffect(() => {
+                document.body.setAttribute('data-theme', activeThemePreset.id);
+                document.documentElement.style.colorScheme = activeThemePreset.scheme;
+
+                try {
+                    localStorage.setItem(themeStorageKey, activeThemePreset.id);
+                } catch (error) {
+                }
+            }, [activeThemePreset]);
+
+            useEffect(() => {
+                try {
+                    localStorage.setItem(poolStorageKey, JSON.stringify(categories));
+                } catch (error) {
+                }
+            }, [categories]);
+
+            useEffect(() => {
+                try {
+                    localStorage.setItem(timingStorageKey, JSON.stringify({ intervalVal, customMs }));
+                } catch (error) {
+                }
+            }, [intervalVal, customMs]);
+
+            useEffect(() => {
+                if (!isAuto) {
+                    return undefined;
+                }
+
+                const timer = window.setInterval(() => {
+                    generateRandom();
+                }, currentMs);
+
+                return () => window.clearInterval(timer);
+            }, [currentMs, generateRandom, isAuto]);
+
+            useEffect(() => {
+                if (!showSettings) {
+                    return undefined;
+                }
+
+                const handleKeydown = (event) => {
+                    if (event.key === 'Escape') {
+                        setShowSettings(false);
+                    }
+                };
+
+                window.addEventListener('keydown', handleKeydown);
+                return () => window.removeEventListener('keydown', handleKeydown);
+            }, [showSettings]);
+
+            useEffect(() => {
+                const originalOverflow = document.body.style.overflow;
+
+                if (showSettings) {
+                    document.body.style.overflow = 'hidden';
+                }
+
+                return () => {
+                    document.body.style.overflow = originalOverflow;
+                };
+            }, [showSettings]);
+
+            const handleAddItem = (categoryId) => {
+                const nextValue = newItems[categoryId].trim();
+
+                if (!nextValue) {
+                    return;
+                }
+
+                setCategories((previousCategories) => previousCategories.map((category) => {
+                    if (category.id === categoryId && !category.items.includes(nextValue)) {
+                        return { ...category, items: [...category.items, nextValue] };
+                    }
+
+                    return category;
+                }));
+
+                setNewItems((previousItems) => ({ ...previousItems, [categoryId]: '' }));
+            };
+
+            const handleRemoveItem = (categoryId, targetItem) => {
+                setCategories((previousCategories) => previousCategories.map((category) => {
+                    if (category.id === categoryId) {
+                        return { ...category, items: category.items.filter((item) => item !== targetItem) };
+                    }
+
+                    return category;
+                }));
+            };
+
+            return (
+                <>
+                    <div className="app-shell">
+                        <main className="stage reveal">
+                            <header className="brand">
+                                <p className="brand-en">Empire の Three Chords</p>
+                                <h1 className="brand-cn">帝国の三和弦</h1>
+                            </header>
+
+                            <section className="results-grid">
+                                {categories.map((category, index) => (
+                                    <article
+                                        key={category.id}
+                                        className="result-card reveal"
+                                        style={{ animationDelay: `${120 + index * 70}ms` }}
+                                    >
+                                        <div className="result-label">{category.name}</div>
+                                        <ResultValue value={results[category.id]} renderKey={renderKeys[category.id]} />
+                                    </article>
+                                ))}
+                            </section>
+
+                            <section className="controls">
+                                <button
+                                    type="button"
+                                    className={`cruise-button ${isAuto ? 'is-active' : ''}`}
+                                    onClick={() => setIsAuto((previousState) => !previousState)}
+                                    aria-pressed={isAuto}
+                                >
+                                    <span className="toggle-track">
+                                        <span className="toggle-thumb"></span>
+                                    </span>
+                                    <span className="cruise-text">
+                                        <strong>自动巡航</strong>
+                                        <span>{isAuto ? `已开启，按 ${formatDuration(currentMs)} 持续刷新` : '关闭状态，点击后开始持续随机'}</span>
+                                    </span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    className="manual-button"
+                                    onClick={generateRandom}
+                                >
+                                    手动随机
+                                </button>
+                            </section>
+                        </main>
+                    </div>
+
+                    <button
+                        type="button"
+                        className={`settings-entry ${showSettings ? 'is-hidden' : ''}`}
+                        onClick={() => setShowSettings(true)}
+                        aria-label="打开设置"
+                    >
+                        <span className="settings-entry-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="12" cy="12" r="3.5"></circle>
+                                <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 0 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 0 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.7 1.7 0 0 0 1.87.34H9a1.7 1.7 0 0 0 1-1.55V3a2 2 0 0 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87V9c0 .67.4 1.28 1.03 1.55.17.07.35.11.52.11H21a2 2 0 0 1 0 4h-.09a1.7 1.7 0 0 0-1.51.34Z"></path>
+                            </svg>
+                        </span>
+                    </button>
+
+                    <div
+                        className={`drawer-backdrop ${showSettings ? 'is-open' : ''}`}
+                        onClick={() => setShowSettings(false)}
+                    ></div>
+
+                    <aside
+                        className={`settings-drawer ${showSettings ? 'is-open' : ''}`}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-hidden={!showSettings}
+                    >
+                        <div className="drawer-scroll">
+                            <div className="drawer-header">
+                                <div>
+                                    <p className="drawer-eyebrow">Settings</p>
+                                    <h2 className="drawer-title">设置面板</h2>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    className="drawer-close"
+                                    onClick={() => setShowSettings(false)}
+                                    aria-label="关闭设置"
+                                >
+                                    ×
+                                </button>
+                            </div>
+
+                            <section className="setting-section">
+                                <h3 className="setting-title">主题预设</h3>
+                                <div className="theme-grid">
+                                    {themePresets.map((theme) => (
+                                        <button
+                                            key={theme.id}
+                                            type="button"
+                                            className={`theme-button ${activeTheme === theme.id ? 'is-active' : ''}`}
+                                            onClick={() => setActiveTheme(theme.id)}
+                                        >
+                                            <span
+                                                className="theme-swatch"
+                                                style={{ '--swatch-start': theme.swatchStart, '--swatch-end': theme.swatchEnd }}
+                                            ></span>
+                                            <span>
+                                                <span className="theme-name">{theme.name}</span>
+                                                <span className="theme-copy">{theme.copy}</span>
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </section>
+
+                            <section className="setting-section">
+                                <h3 className="setting-title">自动巡航节奏</h3>
+
+                                <div className="timing-row">
+                                    {timeOptions.map((option) => (
+                                        <button
+                                            key={option.label}
+                                            type="button"
+                                            className={`timing-chip ${intervalVal === option.value ? 'is-active' : ''}`}
+                                            onClick={() => setIntervalVal(option.value)}
+                                        >
+                                            {option.label}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {intervalVal === 'custom' && (
+                                    <div className="custom-input-wrap">
+                                        <input
+                                            type="number"
+                                            min="300"
+                                            step="100"
+                                            value={customMs}
+                                            onChange={(event) => setCustomMs(Number.parseInt(event.target.value, 10) || 0)}
+                                        />
+                                        <span>ms</span>
+                                    </div>
+                                )}
+
+                                <p className="current-interval">当前自动巡航间隔：{formatDuration(currentMs)}</p>
+                            </section>
+
+                            <section className="setting-section">
+                                <h3 className="setting-title">词池配置</h3>
+
+                                <div className="pool-grid">
+                                    {categories.map((category) => (
+                                        <section key={category.id} className="pool-card">
+                                            <div className="pool-head">
+                                                <h3>{category.name}</h3>
+                                                <span className="pool-count">{category.items.length} 项</span>
+                                            </div>
+
+                                            <div className="chip-list">
+                                                {category.items.length > 0 ? category.items.map((item) => (
+                                                    <span key={item} className="pool-chip">
+                                                        {item}
+                                                        <button
+                                                            type="button"
+                                                            className="chip-remove"
+                                                            onClick={() => handleRemoveItem(category.id, item)}
+                                                            aria-label={`删除 ${item}`}
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </span>
+                                                )) : (
+                                                    <span className="empty-hint">当前词池为空，添加后即可参与抽取。</span>
+                                                )}
+                                            </div>
+
+                                            <form
+                                                className="editor-row"
+                                                onSubmit={(event) => {
+                                                    event.preventDefault();
+                                                    handleAddItem(category.id);
+                                                }}
+                                            >
+                                                <input
+                                                    type="text"
+                                                    value={newItems[category.id]}
+                                                    onChange={(event) => setNewItems((previousItems) => ({
+                                                        ...previousItems,
+                                                        [category.id]: event.target.value
+                                                    }))}
+                                                    placeholder={`添加 ${category.name}`}
+                                                />
+                                                <button type="submit">添加</button>
+                                            </form>
+                                        </section>
+                                    ))}
+                                </div>
+                            </section>
+                        </div>
+                    </aside>
+                </>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
